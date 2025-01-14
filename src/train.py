@@ -21,21 +21,16 @@ class ProjectAgent:
     A reinforcement learning agent using XGBoost for Q-value approximation.
     """
 
-    def __init__(self, config):
-        self.state_dimensions = config['state_dims']
-        self.possible_actions = config['action_nums']
-        self.discount_factor = config.get('discount', 0.99)
-        self.exploration_rate = config.get('exploration', 0.1)
-        self.learning_coefficient = config.get('learning_rate', 0.3)
-        self.depth_of_trees = config.get('tree_depth', 17)
-        self.num_trees = config.get('num_trees', 100)
+    def __init__(self):
+        self.state_dimensions = 6
+        self.possible_actions = 4
         self.episode_counter = 0
 
         self.q_approximators = [
             XGBRegressor(
-                learning_rate=self.learning_coefficient,
-                max_depth=self.depth_of_trees,
-                n_estimators=self.num_trees,
+                learning_rate=0.3,
+                max_depth=17,
+                n_estimators=100,
                 objective="reg:squarederror",
                 n_jobs=-1
             )
@@ -46,7 +41,7 @@ class ProjectAgent:
         }
 
     def select_action(self, state, explore=False):
-        if explore or random.random() < self.exploration_rate:
+        if explore or random.random() < 0.1:
             return random.randint(0, self.possible_actions - 1)
         
         q_estimates = [self.estimate_q(state, a) for a in range(self.possible_actions)]
@@ -58,7 +53,7 @@ class ProjectAgent:
             cumulative_reward = 0
             
             for _ in range(environment._max_episode_steps):
-                if random.random() < self.exploration_rate or self.episode_counter < 10:
+                if random.random() < 0.1 or self.episode_counter < 10:
                     selected_action = self.select_action(current_state, explore=True)
                 else :
                     selected_action = self.select_action(current_state)
@@ -76,7 +71,7 @@ class ProjectAgent:
     def update_training_set(self, state, action, reward, next_state):
         future_q_values = [self.estimate_q(next_state, a) for a in range(self.possible_actions)]
         optimal_future_q = max(future_q_values)
-        q_target = reward + self.discount_factor * optimal_future_q
+        q_target = reward + 0.99 * optimal_future_q
         self.training_repository[action]["states"].append(state)
         self.training_repository[action]["targets"].append(q_target)
 
