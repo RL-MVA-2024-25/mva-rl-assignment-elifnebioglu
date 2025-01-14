@@ -96,6 +96,13 @@ class ProjectAgent:
     def load(self):
         self.q_approximators = joblib.load("agent_models.joblib")
         print("Models loaded successfully, count:", len(self.q_approximators))
+        
+    def act(self, observation, use_random=False):
+        device = "cuda" if next(self.model.parameters()).is_cuda else "cpu"
+        with torch.no_grad():
+            Q = self.model(torch.Tensor(observation).unsqueeze(0).to(device))
+            return torch.argmax(Q).item()
+
 
 
 def train_and_save_model(env, total_episodes):
