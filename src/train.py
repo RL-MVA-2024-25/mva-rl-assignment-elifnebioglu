@@ -99,7 +99,7 @@ class ProjectAgent:
         joblib.dump(self.q_approximators, f"{directory}/agent_models.joblib")
 
     def load(self, directory):
-        self.q_approximators = joblib.load(f"{directory}/agent_models.joblib")
+        self.q_approximators = joblib.load("agent_models.joblib")
         print(f"Agent loaded from {directory}")
 
 
