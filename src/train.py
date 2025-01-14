@@ -98,9 +98,9 @@ class ProjectAgent:
         print("Models loaded successfully, count:", len(self.q_approximators))
         
     def act(self, observation, use_random=False):
-        device = "cuda" if next(self.model.parameters()).is_cuda else "cpu"
+        device = "cuda" if next(self.q_approximators.parameters()).is_cuda else "cpu"
         with torch.no_grad():
-            Q = self.model(torch.Tensor(observation).unsqueeze(0).to(device))
+            Q = self.q_approximators(torch.Tensor(observation).unsqueeze(0).to(device))
             return torch.argmax(Q).item()
 
 
