@@ -98,9 +98,9 @@ class ProjectAgent:
     def save_agent(self, directory):
         joblib.dump(self.q_approximators, f"{directory}/agent_models.joblib")
 
-    def load(self, directory):
+    def load(self):
         self.q_approximators = joblib.load("agent_models.joblib")
-        print(f"Agent loaded from {directory}")
+        print("Models loaded successfully, count:", len(self.q_approximators))
 
 
 def train_and_save_model(env, total_episodes):
