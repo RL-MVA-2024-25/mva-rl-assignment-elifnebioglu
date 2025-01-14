@@ -98,7 +98,7 @@ class ProjectAgent:
     def save_agent(self, directory):
         joblib.dump(self.q_approximators, f"{directory}/agent_models.joblib")
 
-    def load_agent(self, directory):
+    def load(self, directory):
         self.q_approximators = joblib.load(f"{directory}/agent_models.joblib")
         print(f"Agent loaded from {directory}")
 
@@ -113,7 +113,7 @@ def train_and_save_model(env, total_episodes):
         'tree_depth': 10,
         'num_trees': 100
     }
-    agent = ReinforcementAgent(agent_config)
+    agent = ProjectAgent(agent_config)
     agent.train(env, num_training_episodes=total_episodes)
     agent.save_agent("./")
 
